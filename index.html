@@ -1,289 +1,1514 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>АЛЬФА-КАПИТАЛ | Моделирование капитала спортсмена</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #F3F4F6; }
-        input[type="range"]::-webkit-slider-thumb {
-            background: #EF4444;
-            border: 2px solid #FFFFFF;
-            box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Альфа-Капитал Private — финансовая траектория</title>
+ 
+  <style>
+    :root {
+      --red: #f94346;
+      --red-dark: #de3438;
+      --green: #00d5a0;
+      --orange: #ffb547;
+     --navy: #0e1729;
+      --text: #111b31;
+      --muted: #8da0be;
+      --muted-dark: #536783;
+      --line: #dfe6ef;
+      --field: #f7f9fc;
+      --page: #f4f6fa;
+      --white: #ffffff;
+      --success-bg: #ecfcf6;
+      --warning-bg: #fff8e9;
+      --danger-bg: #fff0f0;
+      --shadow: 0 5px 16px rgba(17, 27, 49, .08);
+    }
+ 
+    * {
+      box-sizing: border-box;
+    }
+ 
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--text);
+      font-family: Inter, Arial, Helvetica, sans-serif;
+    }
+ 
+    .container {
+      width: min(1480px, calc(100% - 42px));
+      margin: 0 auto;
+      padding: 30px 0 48px;
+    }
+ 
+    /* Шапка */
+ 
+    .brand-card {
+      min-height: 132px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      padding: 24px 30px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+ 
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+ 
+    .brand-logo {
+      width: 78px;
+      height: 78px;
+      display: grid;
+      place-items: center;
+      border-radius: 21px;
+      color: white;
+      background: var(--red);
+     font-size: 42px;
+      font-weight: 900;
+      box-shadow: 0 6px 12px rgba(249, 67, 70, .24);
+    }
+ 
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+      font-size: clamp(26px, 3vw, 37px);
+      font-weight: 900;
+      letter-spacing: -.8px;
+    }
+ 
+    .private {
+      padding: 7px 9px;
+      border-radius: 8px;
+      color: white;
+      background: var(--red);
+      font: 700 14px monospace;
+      letter-spacing: .5px;
+    }
+ 
+    .brand-subtitle {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 19px;
+    }
+ 
+    .client {
+      text-align: right;
+    }
+ 
+    .client-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+    }
+ 
+    .client-name {
+      margin-top: 5px;
+      font-size: 21px;
+      font-weight: 800;
+    }
+ 
+    /* Карточки и форма */
+ 
+    .card {
+      margin-top: 28px;
+      padding: 38px 42px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+ 
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0;
+      padding-bottom: 23px;
+      border-bottom: 1px solid var(--line);
+      font-size: 23px;
+      font-weight: 850;
+      letter-spacing: .3px;
+      text-transform: uppercase;
+    }
+ 
+    .section-title::before {
+      content: "";
+      width: 8px;
+      height: 28px;
+      border-radius: 10px;
+      background: var(--red);
+    }
+ 
+    .section-subtitle {
+      margin: 11px 0 0;
+      color: var(--muted-dark);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+ 
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px 30px;
+      margin-top: 30px;
+    }
+ 
+    .field.full {
+      grid-column: 1 / -1;
+    }
+ 
+    .field label {
+      display: block;
+      margin-bottom: 9px;
+      color: var(--muted);
+     font-size: 16px;
+      font-weight: 850;
+      letter-spacing: .2px;
+      text-transform: uppercase;
+    }
+ 
+    input,
+    select {
+      width: 100%;
+      height: 64px;
+      padding: 0 18px;
+      border: 2px solid var(--line);
+      border-radius: 13px;
+      outline: none;
+      color: var(--text);
+      background: var(--field);
+      font: 700 23px Inter, Arial, sans-serif;
+      transition: .2s;
+    }
+ 
+    input:focus,
+    select:focus {
+      border-color: var(--red);
+      box-shadow: 0 0 0 4px rgba(249, 67, 70, .1);
+    }
+ 
+    select {
+      font-size: 19px;
+    }
+ 
+    .help {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+ 
+    .purchase-row {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1.3fr 1fr 1fr;
+      gap: 20px;
+      align-items: end;
+      padding: 22px;
+      background: #fffafa;
+      border: 1px solid #ffd6d6;
+      border-radius: 18px;
+    }
+ 
+    .purchase-toggle {
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 17px;
+      border: 2px solid var(--line);
+      border-radius: 13px;
+      background: var(--field);
+      color: #34445d;
+      font-size: 17px;
+      font-weight: 750;
+    }
+ 
+    .purchase-toggle input {
+      width: 24px;
+      height: 24px;
+      accent-color: var(--red);
+    }
+ 
+    .calculate {
+      width: 100%;
+      min-height: 70px;
+      margin-top: 31px;
+      border: 0;
+      border-radius: 18px;
+      color: white;
+      background: var(--red);
+      box-shadow: 0 7px 14px rgba(249, 67, 70, .22);
+      cursor: pointer;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+ 
+    .calculate:hover {
+      background: var(--red-dark);
+    }
+ 
+    /* Карточки результатов */
+ 
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 22px;
+      margin-top: 28px;
+    }
+ 
+    .metric {
+      min-height: 190px;
+      padding: 27px;
+      border-radius: 23px;
+      background: var(--navy);
+      box-shadow: var(--shadow);
+    }
+ 
+    .metric.highlight {
+      border-top: 4px solid var(--red);
+    }
+ 
+    .metric-label {
+      color: #95a7c3;
+      font-size: 14px;
+      font-weight: 850;
+      letter-spacing: .55px;
+      text-transform: uppercase;
+    }
+ 
+    .metric-value {
+      margin-top: 18px;
+      color: white;
+      font-size: clamp(27px, 3vw, 39px);
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+ 
+    .metric-value.red {
+      color: #ff595c;
+    }
+ 
+    .metric-value.green {
+      color: var(--green);
+    }
+ 
+    .metric-value.orange {
+      color: var(--orange);
+    }
+ 
+    .metric-note {
+      margin-top: 14px;
+      color: #a0b1cb;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+ 
+    .metric-status {
+      margin-top: 14px;
+      color: var(--green);
+      font-size: 14px;
+      font-weight: 800;
+    }
+ 
+    .metric-status.warning {
+      color: var(--orange);
+    }
+ 
+    .metric-status.danger {
+      color: #ff8989;
+    }
+ 
+    /* График */
+ 
+    .chart-card {
+      margin-top: 30px;
+      padding: 34px 36px 28px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+ 
+    .chart-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 25px;
+    }
+ 
+    .chart-head h2 {
+      margin: 0;
+      font-size: 24px;
+    }
+ 
+    .chart-head p {
+      max-width: 780px;
+      margin: 8px 0 0;
+      color: var(--muted-dark);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+ 
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 16px;
+      white-space: nowrap;
+      color: var(--muted-dark);
+      font-size: 13px;
+      font-weight: 750;
+    }
+ 
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+ 
+    .line {
+      width: 28px;
+      border-top: 4px solid var(--red);
+      border-radius: 5px;
+    }
+ 
+    .line.green {
+      border-top: 3px dashed var(--green);
+    }
+ 
+    #chart {
+      display: block;
+      width: 100%;
+      min-height: 440px;
+      margin-top: 20px;
+    }
+ 
+    /* Итоговый вывод */
+ 
+    .analysis-card {
+      margin-top: 30px;
+      padding: 35px 38px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+ 
+    .analysis-label {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin: 0 0 18px;
+      color: var(--red);
+      font-size: 19px;
+      font-weight: 900;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+    }
+ 
+    .analysis-label::before {
+      content: "";
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--red);
+    }
+ 
+    .analysis-text {
+      margin: 0;
+      color: #455a77;
+      font-size: clamp(18px, 2vw, 25px);
+      line-height: 1.55;
+    }
+ 
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 17px;
+      margin-top: 26px;
+    }
+ 
+    .action {
+      min-height: 145px;
+      padding: 20px;
+      border: 1px solid;
+      border-radius: 17px;
+    }
+ 
+    .action h3 {
+      margin: 0 0 9px;
+      font-size: 16px;
+    }
+ 
+    .action p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+ 
+    .action.ok {
+      color: #087a5a;
+      background: var(--success-bg);
+      border-color: #a7f3d0;
+    }
+ 
+    .action.warning {
+      color: #9d5d00;
+      background: var(--warning-bg);
+      border-color: #fde0a0;
+    }
+ 
+    .action.danger {
+      color: #a72c2c;
+     background: var(--danger-bg);
+      border-color: #fecaca;
+    }
+ 
+    .note {
+      margin: 22px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+ 
+    @media (max-width: 1000px) {
+      .metrics {
+        grid-template-columns: repeat(2, 1fr);
+      }
+ 
+      .actions {
+        grid-template-columns: 1fr;
+      }
+ 
+      .chart-head {
+        flex-direction: column;
+      }
+ 
+      .legend {
+        justify-content: flex-start;
+      }
+ 
+      .purchase-row {
+        grid-template-columns: 1fr;
+      }
+    }
+ 
+    @media (max-width: 680px) {
+      .container {
+        width: min(100% - 22px, 1480px);
+        padding-top: 14px;
+      }
+ 
+      .brand-card {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 20px;
+      }
+ 
+      .client {
+        text-align: left;
+      }
+ 
+      .brand-logo {
+        width: 58px;
+        height: 58px;
+        border-radius: 16px;
+        font-size: 31px;
+      }
+ 
+      .brand {
+        gap: 13px;
+      }
+ 
+      .brand-title {
+        font-size: 23px;
+      }
+ 
+      .private {
+        font-size: 10px;
+      }
+ 
+      .card,
+      .chart-card,
+      .analysis-card {
+        padding: 23px 19px;
+        border-radius: 20px;
+      }
+ 
+      .section-title {
+        font-size: 18px;
+      }
+ 
+      .form-grid {
+        grid-template-columns: 1fr;
+        gap: 19px;
+      }
+ 
+      .field.full,
+      .purchase-row {
+        grid-column: auto;
+      }
+ 
+      .field label {
+        font-size: 13px;
+      }
+ 
+      input,
+      select {
+        height: 56px;
+        font-size: 19px;
+      }
+ 
+      .calculate {
+        min-height: 60px;
+        font-size: 16px;
+      }
+ 
+      .metrics {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+ 
+      #chart {
+        min-height: 330px;
+      }
+ 
+      .analysis-text {
+        font-size: 18px;
+      }
+    }
+  </style>
 </head>
-<body class="text-slate-700 min-h-screen p-4 md:p-6">
-
-    <div class="max-w-7xl mx-auto space-y-6">
-        <!-- Хедер в точном стиле как на скрине IMG_0019.jpg -->
-        <header class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div class="flex items-center gap-3">
-                <!-- Фирменный красный квадрат с буквой А -->
-                <div class="w-12 h-12 bg-[#EF4444] rounded-xl flex items-center justify-center shrink-0 shadow-sm">
-                    <span class="text-white text-2xl font-black tracking-tighter">А</span>
-                </div>
-                <div>
-                    <div class="flex items-center gap-2">
-                        <h1 class="text-lg font-black tracking-tight text-slate-900 uppercase">
-                            АЛЬФА-КАПИТАЛ
-                        </h1>
-                        <!-- Красно-оранжевый бейдж PRIVATE -->
-                        <span class="text-[9px] bg-[#EF4444] text-white px-1.5 py-0.5 rounded font-mono font-bold tracking-wider uppercase">
-                            PRIVATE
-                        </span>
-                    </div>
-                    <p class="text-xs text-slate-400 font-medium mt-0.5">Интерактивный конструктор индивидуального портфеля фондов</p>
-                </div>
-            </div>
-            <div class="text-left sm:text-right sm:pr-2">
-                <div class="text-sm font-black text-slate-950">Константин</div>
-            </div>
-        </header>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
-            <!-- Панель ввода -->
-            <div class="lg:col-span-1 bg-white p-6 rounded-2xl border border-slate-200/80 space-y-5 shadow-sm">
-                <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-3 flex items-center gap-2">
-                    <span class="w-1 h-3.5 bg-[#EF4444] rounded-full inline-block"></span>
-                    <span>Параметры игрока</span>
-                </h2>
-
-                <!-- Сроки -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[11px] text-slate-400 uppercase font-bold mb-1 tracking-wide">Возраст сейчас</label>
-                        <input type="number" id="currentAge" value="22" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 font-bold focus:border-[#EF4444] focus:bg-white outline-none text-sm transition">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] text-slate-400 uppercase font-bold mb-1 tracking-wide">Финиш карьеры</label>
-                        <input type="number" id="retirementAge" value="33" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 font-bold focus:border-[#EF4444] focus:bg-white outline-none text-sm transition">
-                    </div>
-                </div>
-
-                <!-- Доходы -->
-                <div class="space-y-3">
-                    <div>
-                        <label class="block text-[11px] text-slate-400 uppercase font-bold mb-1 tracking-wide">Контракт (чистыми в год, млн ₽)</label>
-                        <input type="number" id="annualIncome" value="45" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 font-bold focus:border-[#EF4444] focus:bg-white outline-none text-sm transition">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] text-slate-400 uppercase font-bold mb-1 tracking-wide">Ожидаемые бонусы в год (млн ₽)</label>
-                        <input type="number" id="annualBonus" value="10" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-[#EF4444] font-bold focus:border-[#EF4444] focus:bg-white outline-none text-sm transition">
-                        <p class="text-[10px] text-slate-400 mt-1">*Премии за плей-офф/достижения инвестируются на 100%</p>
-                    </div>
-                    <div>
-                        <label class="block text-[11px] text-slate-400 uppercase font-bold mb-1 tracking-wide">Сколько откладываем (в МЕСЯЦ, тыс ₽)</label>
-                        <input type="number" id="monthlySavings" value="1500" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 font-bold focus:border-[#EF4444] focus:bg-white outline-none text-sm transition">
-                        <p class="text-[10px] text-slate-400 mt-1">*Из регулярного оклада на накопительную модель</p>
-                    </div>
-                    <div>
-                        <label class="block text-[11px] text-slate-400 uppercase font-bold mb-1 tracking-wide">Капитал на старте (млн ₽)</label>
-                        <input type="number" id="currentCapital" value="15" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 font-bold focus:border-[#EF4444] focus:bg-white outline-none text-sm transition">
-                    </div>
-                </div>
-
-                <!-- Выбор стратегии -->
-                <div>
-                    <label class="block text-[11px] text-slate-400 uppercase font-bold mb-1 tracking-wide">Инвестиционная стратегия</label>
-                    <select id="strategyProfile" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 font-medium focus:border-[#EF4444] focus:bg-white outline-none text-sm transition cursor-pointer">
-                        <option value="ultra-conservative">Ультра-консервативная (Защита) ~10% годовых</option>
-                        <option value="conservative">Консервативная (Рентная) ~14% годовых</option>
-                        <option value="balanced" selected>Сбалансированная (Умеренная) ~17% годовых</option>
-                        <option value="aggressive">Умеренно агрессивная (Рост) ~21% годовых</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-[11px] text-slate-400 uppercase font-bold mb-1 tracking-wide">Уровень жизни после спорта (в месяц, тыс ₽)</label>
-                    <input type="number" id="desiredPassiveIncome" value="800" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-900 font-bold focus:border-[#EF4444] focus:bg-white outline-none text-sm transition">
-                </div>
-
-                <!-- Опция: Крупная покупка -->
-                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-3">
-                    <div class="flex items-center justify-between">
-                        <label class="text-xs text-slate-700 font-semibold cursor-pointer select-none" for="bigPurchaseCheck">Покупка авто / недвижимости</label>
-                        <input type="checkbox" id="bigPurchaseCheck" class="w-4 h-4 accent-[#EF4444] cursor-pointer">
-                    </div>
-                    <div id="bigPurchaseBlock" class="hidden grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="block text-[10px] text-slate-400 font-medium mb-1">Цена (млн ₽)</label>
-                            <input type="number" id="purchaseCost" value="20" class="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 text-xs font-bold">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] text-slate-400 font-medium mb-1">На каком году</label>
-                            <input type="number" id="purchaseYear" value="2" class="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 text-xs font-bold">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Новая красная кнопка в стиле Альфы -->
-                <button onclick="calculateFinance()" class="w-full bg-[#EF4444] hover:bg-[#DC2626] text-white font-bold py-3 px-4 rounded-xl transition uppercase tracking-wider text-xs shadow-sm cursor-pointer">
-                    Просчитать траекторию капитала
-                </button>
-            </div>
-
-            <!-- Результаты -->
-            <div class="lg:col-span-2 space-y-6">
-                <!-- Карточки результатов в стиле темного блока со скрина -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-[#0F172A] p-4 rounded-xl text-white shadow-sm">
-                        <p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Реальный % сохранения</p>
-                        <p id="calcRealRate" class="text-xl font-black text-white mt-1">0%</p>
-                        <p class="text-[10px] text-slate-400 mt-1">от общего дохода (+бонусы)</p>
-                    </div>
-                    <div class="bg-[#0F172A] p-4 rounded-xl text-white shadow-sm border-t-2 border-[#EF4444]">
-                        <p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Капитал на пике карьеры</p>
-                        <p id="calcTotalCapital" class="text-xl font-black text-[#EF4444] mt-1">0 ₽</p>
-                        <p id="verdictText" class="text-[10px] text-slate-400 mt-1 font-semibold">Расчет...</p>
-                    </div>
-                    <div class="bg-[#0F172A] p-4 rounded-xl text-white shadow-sm">
-                        <p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Пассивный доход</p>
-                        <p id="zpifRent" class="text-xl font-black text-emerald-400 mt-1">0 ₽ <span class="text-[10px] font-normal text-slate-400">/ мес</span></p>
-                        <p class="text-[10px] text-slate-400 mt-1">Рентная модель накоплений</p>
-                    </div>
-                </div>
-
-                <!-- График с красной линией траектории -->
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
-                    <div class="relative h-[360px]">
-                        <canvas id="capitalChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Заключение -->
-                <div class="bg-white p-5 rounded-xl border border-slate-200/80 space-y-2 text-xs shadow-sm">
-                    <h4 class="font-bold uppercase text-[10px] tracking-wider text-[#EF4444] flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 bg-[#EF4444] rounded-full inline-block"></span>
-                        Анализ финансовой прочности
-                    </h4>
-                    <p id="advisorTip" class="text-slate-600 text-sm leading-relaxed">Загрузка данных...</p>
-                </div>
-            </div>
-
+ 
+<body>
+  <main class="container">
+ 
+    <header class="brand-card">
+      <div class="brand">
+        <div class="brand-logo">A</div>
+ 
+        <div>
+          <h1 class="brand-title">
+            АЛЬФА-КАПИТАЛ
+            <span class="private">PRIVATE</span>
+          </h1>
+          <div class="brand-subtitle">
+            Финансовая траектория спортсмена
+          </div>
         </div>
-    </div>
-
-    <script>
-        document.getElementById('bigPurchaseCheck').addEventListener('change', function(e) {
-            document.getElementById('bigPurchaseBlock').classList.toggle('hidden', !e.target.checked);
-        });
-
-        let chartInstance = null;
-
-        function calculateFinance() {
-            const currentAge = parseInt(document.getElementById('currentAge').value);
-            const retirementAge = parseInt(document.getElementById('retirementAge').value);
-            const annualIncome = parseFloat(document.getElementById('annualIncome').value) * 1000000;
-            const annualBonus = parseFloat(document.getElementById('annualBonus').value) * 1000000;
-            const monthlySavings = parseFloat(document.getElementById('monthlySavings').value) * 1000;
-            const desiredPassiveIncomeYear = parseFloat(document.getElementById('desiredPassiveIncome').value) * 1000 * 12;
-            let currentCapital = parseFloat(document.getElementById('currentCapital').value) * 1000000;
-            
-            const hasPurchase = document.getElementById('bigPurchaseCheck').checked;
-            const purchaseCost = parseFloat(document.getElementById('purchaseCost').value) * 1000000;
-            const purchaseYear = parseInt(document.getElementById('purchaseYear').value);
-
-            const totalAnnualSavings = (monthlySavings * 12) + annualBonus;
-            const totalAnnualIncome = annualIncome + annualBonus;
-            const realSavingsRate = (totalAnnualSavings / totalAnnualIncome) * 100;
-            document.getElementById('calcRealRate').innerText = Math.round(realSavingsRate) + '%';
-
-            const inflation = 0.07;
-            
-            let strategyYield = 0.17; 
-            const selectStrategy = document.getElementById('strategyProfile').value;
-            if (selectStrategy === 'ultra-conservative') strategyYield = 0.10;
-            else if (selectStrategy === 'conservative') strategyYield = 0.14;
-            else if (selectStrategy === 'aggressive') strategyYield = 0.21;
-
-            const realYieldActive = strategyYield - inflation;
-            const realYieldPassive = 0.13 - inflation; 
-
-            let labels = [];
-            let capitalData = [];
-            let capital = currentCapital;
-            let peakCapital = 0;
-
-            for(let age = currentAge; age <= 65; age++) {
-                labels.push(`${age} лет`);
-                
-                if(hasPurchase && (age === (currentAge + purchaseYear))) {
-                    capital = capital - purchaseCost;
-                    if(capital < 0) capital = 0;
-                }
-
-                capitalData.push(Math.round(capital));
-
-                if(age < retirementAge) {
-                    capital = (capital + totalAnnualSavings) * (1 + realYieldActive);
-                    peakCapital = capital;
-                } else {
-                    capital = capital * (1 + realYieldPassive) - desiredPassiveIncomeYear;
-                    if(capital < 0) capital = 0;
-                }
+      </div>
+ 
+      <div class="client">
+        <div class="client-label">Клиент</div>
+        <div class="client-name">Персональный расчёт</div>
+      </div>
+    </header>
+ 
+    <section class="card">
+      <h2 class="section-title">Параметры игрока</h2>
+ 
+      <p class="section-subtitle">
+        Введите текущие данные и желаемый уровень жизни после спорта.
+        Расчёт покажет траекторию капитала до 80 лет, дефицит или запас,
+        а также действия для корректировки плана.
+      </p>
+ 
+      <div class="form-grid">
+        <div class="field">
+          <label for="age">Возраст сейчас</label>
+          <input id="age" type="number" value="27" min="18" max="65">
+        </div>
+ 
+        <div class="field">
+          <label for="retireAge">Финиш карьеры</label>
+          <input id="retireAge" type="number" value="35" min="19" max="70">
+        </div>
+ 
+        <div class="field full">
+          <label for="contract">Контракт, чистыми в год, млн ₽</label>
+          <input id="contract" type="number" value="40" min="0" step="1">
+        </div>
+ 
+        <div class="field full">
+          <label for="bonus">Ожидаемые бонусы в год, млн ₽</label>
+          <input id="bonus" type="number" value="5" min="0" step="0.5">
+          <span class="help">
+            В модели бонусы направляются в капитал на 100%.
+          </span>
+        </div>
+ 
+        <div class="field full">
+          <label for="monthlySave">Сколько откладываем в месяц, тыс. ₽</label>
+          <input id="monthlySave" type="number" value="1000" min="0" step="50">
+          <span class="help">
+            Регулярный взнос в накопительную модель из основного дохода.
+          </span>
+        </div>
+ 
+        <div class="field full">
+          <label for="startCapital">Капитал на старте, млн ₽</label>
+          <input id="startCapital" type="number" value="15" min="0" step="1">
+        </div>
+ 
+        <div class="field full">
+          <label for="strategy">Инвестиционная стратегия</label>
+          <select id="strategy">
+            <option value="0.10">Защитная — расчётная доходность 10% годовых</option>
+            <option value="0.14" selected>Консервативная — расчётная доходность 14% годовых</option>
+            <option value="0.16">Сбалансированная — расчётная доходность 16% годовых</option>
+            <option value="0.18">Динамичная — расчётная доходность 18% годовых</option>
+          </select>
+          <span class="help">
+            Доходность — параметр расчёта, а не гарантия результата.
+          </span>
+        </div>
+ 
+        <div class="field full">
+          <label for="desiredFlow">
+            Желаемый денежный поток после спорта, тыс. ₽ в месяц
+          </label>
+          <input id="desiredFlow" type="number" value="1000" min="0" step="50">
+          <span class="help">
+            Модель не использует ставку изъятия: она проверяет,
+            хватит ли капитала на заданный денежный поток до 80 лет.
+          </span>
+        </div>
+ 
+        <div class="field">
+          <label for="incomeAfter">
+            Доход после карьеры, тыс. ₽ в месяц
+          </label>
+          <input id="incomeAfter" type="number" value="0" min="0" step="50">
+          <span class="help">Например, тренерская работа, бизнес или медиа.</span>
+        </div>
+ 
+        <div class="field">
+          <label for="earlyEnd">
+            Стресс-тест: карьера короче на, лет
+          </label>
+          <input id="earlyEnd" type="number" value="2" min="0" max="10">
+        </div>
+ 
+        <div class="purchase-row">
+          <div class="purchase-toggle">
+            <span>Покупка авто / недвижимости</span>
+            <input id="purchaseEnabled" type="checkbox">
+          </div>
+ 
+          <div class="field">
+            <label for="purchaseAge">Возраст покупки</label>
+            <input id="purchaseAge" type="number" value="30" min="18" max="80">
+          </div>
+ 
+          <div class="field">
+            <label for="purchaseAmount">Стоимость покупки, млн ₽</label>
+            <input id="purchaseAmount" type="number" value="20" min="0" step="1">
+          </div>
+        </div>
+      </div>
+ 
+      <button id="calculateButton" class="calculate" type="button">
+        Просчитать траекторию капитала
+      </button>
+    </section>
+ 
+    <section class="metrics">
+      <article class="metric">
+        <div class="metric-label">Реальный % сохранения</div>
+        <div id="savingRate" class="metric-value">—</div>
+        <div class="metric-note">от общего дохода и бонусов</div>
+      </article>
+ 
+      <article class="metric highlight">
+        <div class="metric-label">Капитал на финише карьеры</div>
+        <div id="capitalAtRetire" class="metric-value red">—</div>
+        <div id="retireStatus" class="metric-status">—</div>
+      </article>
+ 
+      <article class="metric">
+        <div class="metric-label">Желаемый поток после спорта</div>
+        <div id="desiredFlowCard" class="metric-value green">—</div>
+        <div class="metric-note">в месяц до 80 лет</div>
+      </article>
+ 
+      <article class="metric">
+        <div class="metric-label">Разрыв до устойчивого плана</div>
+        <div id="gapCard" class="metric-value orange">—</div>
+        <div id="gapDescription" class="metric-note">—</div>
+      </article>
+    </section>
+ 
+    <section class="chart-card">
+      <div class="chart-head">
+        <div>
+          <h2>Траектория капитала</h2>
+          <p>
+            Красная линия — текущий план. Зелёная пунктирная линия —
+            ориентир по капиталу, необходимый для желаемого денежного потока
+            до 80 лет.
+          </p>
+        </div>
+ 
+        <div class="legend">
+          <span class="legend-item">
+            <span class="line"></span> Текущий план
+          </span>
+ 
+          <span class="legend-item">
+            <span class="line green"></span> Нужный капитал
+          </span>
+        </div>
+      </div>
+ 
+      <canvas id="chart"></canvas>
+    </section>
+ 
+    <section class="analysis-card">
+      <h2 class="analysis-label">Анализ финансовой прочности</h2>
+ 
+      <p id="analysisText" class="analysis-text">
+        Выполняется расчёт…
+      </p>
+ 
+      <div id="actions" class="actions"></div>
+ 
+      <p class="note">
+        Расчёт носит информационный характер и основан на введённых параметрах.
+        Он не учитывает все налоги, комиссии, инфляцию, изменение доходов,
+        валютные риски, юридическую структуру активов и индивидуальные обстоятельства.
+        Результат не является инвестиционной рекомендацией и не гарантирует доходность
+        или сохранность капитала.
+      </p>
+    </section>
+  </main>
+ 
+  <script>
+    function getElement(id) {
+      return document.getElementById(id);
+    }
+ 
+    function getNumber(id) {
+      return Number(getElement(id).value) || 0;
+    }
+ 
+    var formatter = new Intl.NumberFormat("ru-RU", {
+      maximumFractionDigits: 0
+    });
+ 
+    function formatRubles(value) {
+      return formatter.format(Math.round(value)) + " ₽";
+    }
+ 
+    function formatMillions(value) {
+      if (Math.abs(value) >= 1000) {
+        return (value / 1000).toLocaleString("ru-RU", {
+          maximumFractionDigits: 1
+        }) + " млрд ₽";
+      }
+ 
+      return value.toLocaleString("ru-RU", {
+        maximumFractionDigits: 1
+      }) + " млн ₽";
+    }
+ 
+    /*
+      Все суммы в расчётной модели ниже указываются в млн ₽.
+    */
+    function getParams() {
+      return {
+        age: getNumber("age"),
+        retireAge: getNumber("retireAge"),
+ 
+        contract: getNumber("contract"),
+        bonus: getNumber("bonus"),
+ 
+        monthlySave: getNumber("monthlySave") / 1000,
+        startCapital: getNumber("startCapital"),
+ 
+        annualReturn: Number(getElement("strategy").value),
+ 
+        desiredFlow: getNumber("desiredFlow") / 1000,
+        incomeAfter: getNumber("incomeAfter") / 1000,
+ 
+        earlyEnd: getNumber("earlyEnd"),
+ 
+        purchaseEnabled: getElement("purchaseEnabled").checked,
+        purchaseAge: getNumber("purchaseAge"),
+        purchaseAmount: getNumber("purchaseAmount")
+      };
+    }
+ 
+    /*
+      До финиша карьеры капитал растёт за счёт:
+      1) стартового капитала;
+      2) ежемесячных взносов;
+      3) ежегодных бонусов;
+      4) расчётной доходности.
+ 
+      После финиша карьеры капитал покрывает разницу:
+      желаемый денежный поток минус доход после карьеры.
+    */
+    function simulate(params, override) {
+      override = override || {};
+ 
+      var retirementAge = override.retireAge !== undefined
+        ? override.retireAge
+        : params.retireAge;
+ 
+      var capital = override.startCapital !== undefined
+        ? override.startCapital
+        : params.startCapital;
+ 
+      var monthlySave = override.monthlySave !== undefined
+        ? override.monthlySave
+        : params.monthlySave;
+ 
+      var bonus = override.bonus !== undefined
+        ? override.bonus
+        : params.bonus;
+ 
+      var purchaseEnabled = override.purchaseEnabled !== undefined
+        ? override.purchaseEnabled
+        : params.purchaseEnabled;
+ 
+      var monthlyReturn = Math.pow(1 + params.annualReturn, 1 / 12) - 1;
+ 
+      var points = [];
+      var capitalAtRetire = null;
+      var depletedAge = null;
+ 
+      for (var age = params.age; age <= 80; age++) {
+        for (var month = 0; month < 12; month++) {
+          capital = capital * (1 + monthlyReturn);
+ 
+          if (age < retirementAge) {
+            capital = capital + monthlySave;
+ 
+            if (month === 11) {
+              capital = capital + bonus;
             }
-
-            document.getElementById('calcTotalCapital').innerText = Math.round(peakCapital / 1000000).toLocaleString() + ' млн ₽';
-            
-            const monthlyRent = (peakCapital * realYieldPassive) / 12;
-            document.getElementById('zpifRent').innerText = Math.round(monthlyRent > 0 ? monthlyRent : 0).toLocaleString() + ' ₽';
-
-            let verdict = "";
-            let tip = "";
-            if (capitalData[capitalData.length - 1] > 0) {
-                verdict = "✓ Капитал устойчив";
-                tip = `При сохранении ${Math.round(monthlySavings/1000)} тыс. ₽ в месяц и 100% инвестировании ежегодных бонусов (${Math.round(annualBonus/1000000)} млн ₽), базовый капитал к концу карьеры составит ${Math.round(peakCapital/1000000)} млн ₽. Перевод этой суммы в защитные инструменты обеспечит чистый пассивный доход в размере ${Math.round(monthlyRent).toLocaleString()} ₽ в месяц. Желаемый уровень жизни полностью защищен на долгосрочном горизонте.`;
-                document.getElementById('verdictText').className = "text-[10px] text-emerald-400 mt-1 font-semibold";
-            } else {
-                verdict = "⚠️ Дефицит капитала";
-                let brokenAge = currentAge;
-                for(let i=0; i<capitalData.length; i++) {
-                    if(capitalData[i] === 0) { brokenAge = currentAge + i; break; }
-                }
-                tip = `Внимание: текущая норма сбережений ведет к постепенному исчерпанию средств. Накопленного на пике капитала в ${Math.round(peakCapital/1000000)} млн ₽ не хватит для долгосрочного обеспечения жизни, баланс обнулится к ${brokenAge} годам. Рекомендация: необходимо пересмотреть стратегию доходности, увеличить ежемесячный взнос, либо скорректировать ожидания по расходам после окончания спортивной карьеры.`;
-                if(hasPurchase) { tip += ` Наглядно видно, как крупная покупка за ${purchaseCost/1000000} млн ₽ на раннем этапе выбила деньги из сложного процента.`; }
-                document.getElementById('verdictText').className = "text-[10px] text-red-400 mt-1 font-semibold";
-            }
-
-            document.getElementById('verdictText').innerText = verdict;
-            document.getElementById('advisorTip').innerText = tip;
-
-            if (chartInstance) { chartInstance.destroy(); }
-            const ctx = document.getElementById('capitalChart').getContext('2d');
-            chartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Траектория капитала',
-                        data: capitalData,
-                        borderColor: '#EF4444', /* Красная линия тренда */
-                        borderWidth: 3,
-                        backgroundColor: 'rgba(239, 68, 68, 0.04)',
-                        fill: true,
-                        tension: 0.15,
-                        pointBackgroundColor: '#FFFFFF',
-                        pointBorderColor: '#EF4444',
-                        pointRadius: function(context) { return context.dataIndex === (retirementAge - currentAge) ? 6 : 0; }
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { grid: { color: '#E2E8F0' }, ticks: { color: '#64748B', callback: function(v) { return (v/1000000).toFixed(0) + ' млн'; } } },
-                        x: { grid: { color: 'transparent' }, ticks: { color: '#64748B' } }
-                    },
-                    plugins: { legend: { display: false } }
-                }
-            });
+          } else {
+            var withdrawal = Math.max(
+              0,
+              params.desiredFlow - params.incomeAfter
+            );
+ 
+            capital = capital - withdrawal;
+          }
+ 
+          if (
+            purchaseEnabled &&
+            age === params.purchaseAge &&
+            month === 0
+          ) {
+            capital = capital - params.purchaseAmount;
+          }
+ 
+          if (capital <= 0 && depletedAge === null) {
+            depletedAge = age + month / 12;
+            capital = 0;
+          }
         }
-        calculateFinance();
-    </script>
+ 
+        if (age === retirementAge) {
+          capitalAtRetire = capital;
+        }
+ 
+        points.push({
+          age: age,
+          capital: Math.max(0, capital)
+        });
+      }
+ 
+      return {
+        points: points,
+        capitalAtRetire: capitalAtRetire !== null ? capitalAtRetire : 0,
+        capitalAt80: points[points.length - 1].capital,
+        depletedAge: depletedAge
+      };
+    }
+ 
+    /*
+      Подбираем минимальный капитал к финишу карьеры, который
+      позволит поддерживать введённый денежный поток до 80 лет.
+ 
+      Ставка изъятия в процентах не используется.
+    */
+    function findRequiredCapitalAtRetire(params) {
+      var afterCareerParams = {
+        age: params.retireAge,
+        retireAge: params.retireAge,
+        contract: 0,
+        bonus: 0,
+        monthlySave: 0,
+        startCapital: 0,
+        annualReturn: params.annualReturn,
+        desiredFlow: params.desiredFlow,
+        incomeAfter: params.incomeAfter,
+        earlyEnd: 0,
+        purchaseEnabled: false,
+        purchaseAge: 0,
+        purchaseAmount: 0
+      };
+ 
+      var low = 0;
+      var high = 100;
+ 
+      while (
+        simulate(afterCareerParams, {
+          startCapital: high,
+          monthlySave: 0,
+          bonus: 0,
+          purchaseEnabled: false
+        }).capitalAt80 <= 0 &&
+        high < 100000
+      ) {
+        high = high * 2;
+      }
+ 
+      for (var i = 0; i < 85; i++) {
+        var middle = (low + high) / 2;
+ 
+        var test = simulate(afterCareerParams, {
+          startCapital: middle,
+          monthlySave: 0,
+          bonus: 0,
+          purchaseEnabled: false
+        });
+ 
+        if (test.capitalAt80 > 0) {
+          high = middle;
+        } else {
+          low = middle;
+        }
+      }
+ 
+      return high;
+    }
+ 
+    function createRequiredPath(params, requiredCapital) {
+      var result = [];
+      var yearsToRetire = Math.max(1, params.retireAge - params.age);
+ 
+      for (var age = params.age; age <= 80; age++) {
+        var progress = Math.min(
+          1,
+          Math.max(0, (age - params.age) / yearsToRetire)
+        );
+ 
+        var capital;
+ 
+        if (age <= params.retireAge) {
+          capital =
+            params.startCapital +
+            (requiredCapital - params.startCapital) * progress;
+        } else {
+          capital = requiredCapital;
+        }
+ 
+        result.push({
+          age: age,
+          capital: capital
+        });
+      }
+ 
+      return result;
+    }
+ 
+    function drawChart(actualPoints, requiredPoints, retirementAge) {
+      var canvas = getElement("chart");
+      var context = canvas.getContext("2d");
+      var rect = canvas.getBoundingClientRect();
+      var ratio = window.devicePixelRatio || 1;
+ 
+      var width = rect.width;
+      var height = Math.max(360, Math.min(500, width * 0.42));
+ 
+      canvas.width = width * ratio;
+      canvas.height = height * ratio;
+ 
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      context.clearRect(0, 0, width, height);
+ 
+      var padding = {
+        left: 94,
+        right: 28,
+        top: 38,
+        bottom: 74
+      };
+ 
+      var chartWidth = width - padding.left - padding.right;
+      var chartHeight = height - padding.top - padding.bottom;
+ 
+      var maxCapital = 1;
+      var i;
+ 
+      for (i = 0; i < actualPoints.length; i++) {
+        if (actualPoints[i].capital > maxCapital) {
+          maxCapital = actualPoints[i].capital;
+        }
+      }
+ 
+      for (i = 0; i < requiredPoints.length; i++) {
+        if (requiredPoints[i].capital > maxCapital) {
+          maxCapital = requiredPoints[i].capital;
+        }
+      }
+ 
+      maxCapital = Math.ceil(maxCapital / 25) * 25;
+ 
+      var minAge = actualPoints[0].age;
+      var maxAge = actualPoints[actualPoints.length - 1].age;
+ 
+      function x(age) {
+        return padding.left +
+          ((age - minAge) / (maxAge - minAge)) * chartWidth;
+      }
+ 
+      function y(capital) {
+        return padding.top +
+          chartHeight -
+          (capital / maxCapital) * chartHeight;
+      }
+ 
+      /* Горизонтальная сетка */
+ 
+      context.font = "15px Arial";
+      context.textAlign = "right";
+      context.textBaseline = "middle";
+ 
+      for (i = 0; i <= 6; i++) {
+        var value = maxCapital * i / 6;
+        var gridY = y(value);
+ 
+        context.strokeStyle = "#dce4ef";
+        context.lineWidth = 1;
+        context.beginPath();
+        context.moveTo(padding.left, gridY);
+        context.lineTo(width - padding.right, gridY);
+        context.stroke();
+ 
+        context.fillStyle = "#61738f";
+        context.fillText(
+          Math.round(value) + " млн",
+          padding.left - 13,
+          gridY
+        );
+      }
+ 
+      /* Оси */
+ 
+      context.strokeStyle = "#cfd8e6";
+      context.beginPath();
+      context.moveTo(padding.left, padding.top);
+      context.lineTo(padding.left, padding.top + chartHeight);
+      context.lineTo(width - padding.right, padding.top + chartHeight);
+      context.stroke();
+ 
+      /* Подписи возраста */
+ 
+      var ageStep = width < 700 ? 5 : 3;
+ 
+      context.font = "14px Arial";
+      context.fillStyle = "#61738f";
+      context.textAlign = "right";
+ 
+      for (var age = minAge; age <= maxAge; age += ageStep) {
+        context.save();
+        context.translate(
+          x(age),
+          padding.top + chartHeight + 29
+        );
+        context.rotate(-Math.PI / 4);
+        context.fillText(age + " лет", 0, 0);
+        context.restore();
+      }
+ 
+      /* Вертикальная линия финиша карьеры */
+ 
+      var retireX = x(retirementAge);
+ 
+      context.save();
+      context.setLineDash([5, 5]);
+      context.strokeStyle = "#9aaac3";
+      context.beginPath();
+      context.moveTo(retireX, padding.top);
+      context.lineTo(retireX, padding.top + chartHeight);
+      context.stroke();
+      context.setLineDash([]);
+ 
+      context.fillStyle = "#6a7b95";
+      context.font = "13px Arial";
+      context.textAlign = "center";
+      context.fillText(
+        "Финиш карьеры",
+        retireX,
+        padding.top - 15
+      );
+      context.restore();
+ 
+      /* Зелёная пунктирная линия — нужный капитал */
+ 
+      context.save();
+      context.strokeStyle = "#00ad80";
+      context.lineWidth = 3;
+      context.setLineDash([9, 7]);
+      context.beginPath();
+ 
+      for (i = 0; i < requiredPoints.length; i++) {
+        if (i === 0) {
+          context.moveTo(
+            x(requiredPoints[i].age),
+            y(requiredPoints[i].capital)
+          );
+        } else {
+          context.lineTo(
+            x(requiredPoints[i].age),
+            y(requiredPoints[i].capital)
+          );
+        }
+      }
+ 
+      context.stroke();
+      context.setLineDash([]);
+      context.restore();
+ 
+      /* Красная заливка */
+ 
+      var gradient = context.createLinearGradient(
+        0,
+        padding.top,
+        0,
+        padding.top + chartHeight
+      );
+ 
+      gradient.addColorStop(0, "rgba(249,67,70,.16)");
+     gradient.addColorStop(1, "rgba(249,67,70,.015)");
+ 
+      context.beginPath();
+ 
+      for (i = 0; i < actualPoints.length; i++) {
+        if (i === 0) {
+          context.moveTo(
+            x(actualPoints[i].age),
+            y(actualPoints[i].capital)
+          );
+        } else {
+          context.lineTo(
+            x(actualPoints[i].age),
+            y(actualPoints[i].capital)
+          );
+        }
+      }
+ 
+      context.lineTo(x(maxAge), padding.top + chartHeight);
+      context.lineTo(x(minAge), padding.top + chartHeight);
+      context.closePath();
+ 
+      context.fillStyle = gradient;
+      context.fill();
+ 
+      /* Красная линия — текущий план */
+ 
+      context.save();
+      context.strokeStyle = "#f94346";
+      context.lineWidth = 5;
+      context.lineCap = "round";
+      context.lineJoin = "round";
+      context.beginPath();
+ 
+      for (i = 0; i < actualPoints.length; i++) {
+        if (i === 0) {
+          context.moveTo(
+            x(actualPoints[i].age),
+            y(actualPoints[i].capital)
+          );
+        } else {
+          context.lineTo(
+            x(actualPoints[i].age),
+            y(actualPoints[i].capital)
+          );
+        }
+      }
+ 
+      context.stroke();
+      context.restore();
+ 
+      /* Точка на финише карьеры */
+ 
+      var retirePoint = null;
+ 
+      for (i = 0; i < actualPoints.length; i++) {
+        if (actualPoints[i].age === retirementAge) {
+          retirePoint = actualPoints[i];
+          break;
+        }
+      }
+ 
+      if (retirePoint !== null) {
+        context.beginPath();
+        context.arc(
+          x(retirePoint.age),
+          y(retirePoint.capital),
+          10,
+          0,
+          Math.PI * 2
+        );
+ 
+        context.fillStyle = "#ffffff";
+        context.fill();
+ 
+        context.strokeStyle = "#f94346";
+        context.lineWidth = 5;
+        context.stroke();
+      }
+    }
+ 
+    function renderActions(params, gap, savingRate, stressModel) {
+      var actions = [];
+      var yearsLeft = Math.max(1, params.retireAge - params.age);
+ 
+      if (gap > 0) {
+        var extraMonthly = gap / (yearsLeft * 12);
+ 
+        actions.push(
+          '<article class="action danger">' +
+            '<h3>Ускорить накопления</h3>' +
+            '<p>До устойчивого плана не хватает ' +
+            formatMillions(gap) +
+            '. Ориентир — увеличить ежемесячные накопления примерно на ' +
+            formatRubles(extraMonthly * 1000000) +
+            '.</p>' +
+          '</article>'
+        );
+      } else {
+        actions.push(
+          '<article class="action ok">' +
+            '<h3>План устойчив</h3>' +
+            '<p>Текущего капитала к завершению карьеры достаточно, чтобы поддерживать желаемый денежный поток до 80 лет.</p>' +
+          '</article>'
+        );
+      }
+ 
+      if (savingRate < 20) {
+        actions.push(
+          '<article class="action warning">' +
+            '<h3>Повысить долю накоплений</h3>' +
+            '<p>Сейчас в капитал направляется ' +
+            Math.round(savingRate) +
+            '% от контракта и бонусов. Можно увеличить ежемесячный взнос или направлять больше дополнительных доходов в капитал.</p>' +
+          '</article>'
+        );
+      } else {
+        actions.push(
+          '<article class="action ok">' +
+            '<h3>Сохранить дисциплину</h3>' +
+            '<p>В капитал направляется ' +
+            Math.round(savingRate) +
+            '% от введённого годового дохода. Важно сохранить этот темп при росте расходов.</p>' +
+          '</article>'
+        );
+      }
+ 
+      if (stressModel.depletedAge !== null) {
+        actions.push(
+          '<article class="action warning">' +
+            '<h3>Проверить стресс-тест</h3>' +
+            '<p>Если карьера закончится на ' +
+            params.earlyEnd +
+            ' года раньше, капитал может исчерпаться около ' +
+            Math.floor(stressModel.depletedAge) +
+            ' лет. Нужен больший запас капитала.</p>' +
+          '</article>'
+        );
+      } else {
+        actions.push(
+          '<article class="action ok">' +
+            '<h3>План выдерживает стресс-тест</h3>' +
+            '<p>При завершении карьеры на ' +
+            params.earlyEnd +
+            ' года раньше капитал сохраняется до 80 лет в рамках введённых условий.</p>' +
+          '</article>'
+        );
+      }
+ 
+      getElement("actions").innerHTML = actions.join("");
+    }
+ 
+    function calculate() {
+      var params = getParams();
+ 
+      if (params.retireAge <= params.age) {
+        alert("Возраст финиша карьеры должен быть больше текущего возраста.");
+        return;
+      }
+ 
+      if (
+        params.purchaseEnabled &&
+        params.purchaseAge < params.age
+      ) {
+        alert("Возраст покупки не может быть меньше текущего возраста.");
+        return;
+      }
+ 
+      var model = simulate(params);
+      var requiredCapital = findRequiredCapitalAtRetire(params);
+ 
+      var gap = Math.max(
+        0,
+        requiredCapital - model.capitalAtRetire
+      );
+ 
+      var annualSavings =
+        params.monthlySave * 12 + params.bonus;
+ 
+      var annualIncome =
+        params.contract + params.bonus;
+ 
+      var savingRate = annualIncome > 0
+        ? annualSavings / annualIncome * 100
+        : 0;
+ 
+      var stressRetireAge = Math.max(
+        params.age + 1,
+        params.retireAge - params.earlyEnd
+      );
+ 
+      var stressModel = simulate(params, {
+        retireAge: stressRetireAge
+      });
+ 
+      /* Карточка 1 */
+ 
+      getElement("savingRate").textContent =
+        Math.round(savingRate) + "%";
+ 
+      /* Карточка 2 */
+ 
+      getElement("capitalAtRetire").textContent =
+        formatMillions(model.capitalAtRetire);
+ 
+      var retireStatus = getElement("retireStatus");
+      retireStatus.className = "metric-status";
+ 
+      if (model.depletedAge === null && gap === 0) {
+        retireStatus.textContent =
+          "✓ Капитал покрывает план до 80 лет";
+      } else if (model.depletedAge !== null) {
+        retireStatus.classList.add("danger");
+        retireStatus.textContent =
+          "⚠ Капитал может закончиться около " +
+          Math.floor(model.depletedAge) +
+          " лет";
+      } else {
+        retireStatus.classList.add("warning");
+        retireStatus.textContent =
+          "⚠ Запас прочности ограничен";
+      }
+ 
+      /* Карточка 3 */
+ 
+      getElement("desiredFlowCard").textContent =
+        formatRubles(params.desiredFlow * 1000000);
+ 
+     /* Карточка 4 */
+ 
+      var gapCard = getElement("gapCard");
+      var gapDescription = getElement("gapDescription");
+ 
+      if (gap <= 0) {
+        gapCard.className = "metric-value green";
+        gapCard.textContent = "0 ₽";
+        gapDescription.textContent =
+          "Текущего плана достаточно";
+      } else {
+        gapCard.className = "metric-value orange";
+        gapCard.textContent = formatMillions(gap);
+        gapDescription.textContent =
+          "Не хватает к финишу карьеры";
+      }
+ 
+      /* График */
+ 
+      drawChart(
+        model.points,
+        createRequiredPath(params, requiredCapital),
+        params.retireAge
+      );
+ 
+      /* Текстовый вывод */
+ 
+      var analysisText = getElement("analysisText");
+ 
+      if (model.depletedAge === null && gap === 0) {
+        analysisText.innerHTML =
+          'При регулярных накоплениях <strong>' +
+          formatMillions(params.monthlySave) +
+          '</strong> в месяц и инвестировании ежегодных бонусов ' +
+          'в размере <strong>' +
+          formatMillions(params.bonus) +
+          '</strong> капитал к концу карьеры составит <strong>' +
+          formatMillions(model.capitalAtRetire) +
+          '</strong>. Этого достаточно, чтобы поддерживать желаемый поток ' +
+          '<strong>' +
+          formatRubles(params.desiredFlow * 1000000) +
+          ' в месяц</strong> до 80 лет в рамках модели.';
+      } else if (model.depletedAge !== null) {
+        analysisText.innerHTML =
+          'При текущих параметрах капитал к завершению карьеры составит <strong>' +
+          formatMillions(model.capitalAtRetire) +
+          '</strong>, однако желаемый денежный поток <strong>' +
+          formatRubles(params.desiredFlow * 1000000) +
+          ' в месяц</strong> приведёт к исчерпанию капитала примерно к <strong>' +
+          Math.floor(model.depletedAge) +
+          ' годам</strong>. Для устойчивого плана до 80 лет необходимо дополнительно сформировать <strong>' +
+          formatMillions(gap) +
+          '</strong> к финишу карьеры.';
+      } else {
+        analysisText.innerHTML =
+          'Капитал не исчерпывается до 80 лет, но к завершению карьеры текущий план ниже расчётного ориентира на <strong>' +
+          formatMillions(gap) +
+          '</strong>. Дополнительные накопления помогут увеличить запас прочности при изменении доходности, расходов или срока карьеры.';
+      }
+ 
+      renderActions(
+        params,
+        gap,
+        savingRate,
+        stressModel
+      );
+    }
+ 
+    getElement("calculateButton").addEventListener(
+      "click",
+      calculate
+    );
+ 
+    /*
+      Чтобы пользователь сразу видел график и выводы на странице,
+      выполняем первый расчёт с демо-параметрами при открытии.
+    */
+    window.addEventListener("load", calculate);
+ 
+    window.addEventListener("resize", function() {
+      calculate();
+    });
+  </script>
 </body>
 </html>
